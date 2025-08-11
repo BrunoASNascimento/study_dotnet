@@ -2,7 +2,7 @@
 <html lang='en'>
 <head>
 <meta charset='utf-8' />
-<title>BenchmarkStudy.Services.BenchmarkSum-20250810-013427</title>
+<title>BenchmarkStudy.Services.BenchmarkSum-20250810-225049</title>
 
 <style type="text/css">
 	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
@@ -13,20 +13,20 @@
 </head>
 <body>
 <pre><code>
-BenchmarkDotNet v0.15.2, macOS Sequoia 15.5 (24F74) [Darwin 24.5.0]
-Apple M1, 1 CPU, 8 logical and 8 physical cores
-.NET SDK 8.0.413
-  [Host]     : .NET 8.0.19 (8.0.1925.36514), Arm64 RyuJIT AdvSIMD
-  DefaultJob : .NET 8.0.19 (8.0.1925.36514), Arm64 RyuJIT AdvSIMD
+BenchmarkDotNet v0.15.2, Windows 11 (10.0.26100.4770/24H2/2024Update/HudsonValley)
+11th Gen Intel Core i7-11800H 2.30GHz, 1 CPU, 16 logical and 8 physical cores
+.NET SDK 9.0.102
+  [Host]     : .NET 8.0.19 (8.0.1925.36514), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+  DefaultJob : .NET 8.0.19 (8.0.1925.36514), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
 </code></pre>
 <pre><code></code></pre>
 
 <table>
-<thead><tr><th>Method  </th><th>Mean</th><th>Error</th><th>StdDev</th><th>Median</th>
+<thead><tr><th>Method  </th><th>Mean</th><th>Error</th><th>StdDev</th>
 </tr>
-</thead><tbody><tr><td>SumWithForLoop</td><td>439.8 ns</td><td>1.63 ns</td><td>1.44 ns</td><td>439.1 ns</td>
-</tr><tr><td>SumWithForEach</td><td>322.6 ns</td><td>1.07 ns</td><td>0.90 ns</td><td>322.2 ns</td>
-</tr><tr><td>SumWithLinq</td><td>193.3 ns</td><td>3.85 ns</td><td>5.64 ns</td><td>189.6 ns</td>
+</thead><tbody><tr><td>SumWithForLoop</td><td>375.59 ns</td><td>6.189 ns</td><td>5.789 ns</td>
+</tr><tr><td>SumWithForEach</td><td>324.47 ns</td><td>2.738 ns</td><td>2.561 ns</td>
+</tr><tr><td>SumWithLinq</td><td>78.27 ns</td><td>0.679 ns</td><td>0.635 ns</td>
 </tr></tbody></table>
 </body>
 </html>

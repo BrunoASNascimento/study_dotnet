@@ -1,15 +1,15 @@
 ```
 
-BenchmarkDotNet v0.15.2, macOS Sequoia 15.5 (24F74) [Darwin 24.5.0]
-Apple M1, 1 CPU, 8 logical and 8 physical cores
-.NET SDK 8.0.413
-  [Host]     : .NET 8.0.19 (8.0.1925.36514), Arm64 RyuJIT AdvSIMD
-  DefaultJob : .NET 8.0.19 (8.0.1925.36514), Arm64 RyuJIT AdvSIMD
+BenchmarkDotNet v0.15.2, Windows 11 (10.0.26100.4770/24H2/2024Update/HudsonValley)
+11th Gen Intel Core i7-11800H 2.30GHz, 1 CPU, 16 logical and 8 physical cores
+.NET SDK 9.0.102
+  [Host]     : .NET 8.0.19 (8.0.1925.36514), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+  DefaultJob : .NET 8.0.19 (8.0.1925.36514), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
 
 
 ```
-| Method         | Mean     | Error   | StdDev  | Median   |
-|--------------- |---------:|--------:|--------:|---------:|
-| SumWithForLoop | 439.8 ns | 1.63 ns | 1.44 ns | 439.1 ns |
-| SumWithForEach | 322.6 ns | 1.07 ns | 0.90 ns | 322.2 ns |
-| SumWithLinq    | 193.3 ns | 3.85 ns | 5.64 ns | 189.6 ns |
+| Method         | Mean      | Error    | StdDev   |
+|--------------- |----------:|---------:|---------:|
+| SumWithForLoop | 375.59 ns | 6.189 ns | 5.789 ns |
+| SumWithForEach | 324.47 ns | 2.738 ns | 2.561 ns |
+| SumWithLinq    |  78.27 ns | 0.679 ns | 0.635 ns |
