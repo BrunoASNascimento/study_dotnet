@@ -14,24 +14,9 @@ namespace RedisStudy.InfrastructureRedis
             // Load configuration
             _redisSettings = LoadRedisSettings(configuration);
 
-            // Create configuration options
-            var configOptions = new ConfigurationOptions
-            {
-                EndPoints = { _redisSettings.ConnectionString },
-                AbortOnConnectFail = _redisSettings.AbortOnConnectFail,
-                ConnectTimeout = _redisSettings.ConnectTimeout,
-                SyncTimeout = _redisSettings.SyncTimeout
-            };
-
-            // Add password if provided
-            if (!string.IsNullOrEmpty(_redisSettings.Password))
-            {
-                configOptions.Password = _redisSettings.Password;
-            }
-
-            // Connect to Redis
-            _redis = ConnectionMultiplexer.Connect(configOptions);
-            _db = _redis.GetDatabase(_redisSettings.Database);
+            // Connect to Redis using the unified connection string
+            _redis = ConnectionMultiplexer.Connect(_redisSettings.RedisConnectionString ?? "localhost:6379");
+            _db = _redis.GetDatabase();
         }
 
         private RedisSettings LoadRedisSettings(IConfiguration? configuration)
@@ -47,14 +32,7 @@ namespace RedisStudy.InfrastructureRedis
             }
 
             var redisSettings = new RedisSettings();
-            var redisSection = configuration.GetSection("Redis");
-
-            redisSettings.ConnectionString = redisSection["ConnectionString"] ?? "localhost:6379";
-            redisSettings.Database = int.Parse(redisSection["Database"] ?? "0");
-            redisSettings.Password = redisSection["Password"] ?? "";
-            redisSettings.AbortOnConnectFail = bool.Parse(redisSection["AbortOnConnectFail"] ?? "false");
-            redisSettings.ConnectTimeout = int.Parse(redisSection["ConnectTimeout"] ?? "5000");
-            redisSettings.SyncTimeout = int.Parse(redisSection["SyncTimeout"] ?? "5000");
+            redisSettings.RedisConnectionString = configuration["RedisConnectionString"] ?? "localhost:6379";
 
             return redisSettings;
         }

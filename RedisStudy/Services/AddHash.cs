@@ -4,12 +4,12 @@ using RedisStudy.InfrastructureRedis;
 
 namespace RedisStudy.Services
 {
-    public class UploadHash
+    public class AddHash
     {
         private readonly string _key;
         private readonly ConnectionRedis _connectionRedis;
 
-        public UploadHash(string key, ConnectionRedis connectionRedis)
+        public AddHash(string key, ConnectionRedis connectionRedis)
         {
             _key = key ?? throw new ArgumentNullException(nameof(key));
             _connectionRedis = connectionRedis ?? throw new ArgumentNullException(nameof(connectionRedis));

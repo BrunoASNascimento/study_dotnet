@@ -2,12 +2,12 @@
 
 namespace RedisStudy.Services
 {
-    public class UploadString
+    public class AddString
     {
         private readonly string _key;
         private readonly ConnectionRedis _connectionRedis;
 
-        public UploadString(string key, ConnectionRedis connectionRedis)
+        public AddString(string key, ConnectionRedis connectionRedis)
         {
             _key = key;
             _connectionRedis = connectionRedis;
