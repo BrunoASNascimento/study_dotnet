@@ -27,11 +27,10 @@ class Program
         // Test default Redis configuration
         Console.WriteLine("Testing Redis connection with configuration from appsettings.json...");
 
-        // Create an instance of Program to access the ConnectionRedis
 
         // Upload a string to Redis
-        //var uploadString = new UploadString("test");
-        //uploadString.Execute();
+        var uploadString = new UploadString("test", program._connectionRedis);
+        uploadString.Execute();
 
         // Upload a hash to Redis
         var uploadHash = new UploadHash("test2", program._connectionRedis);

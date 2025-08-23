@@ -1,0 +1,59 @@
+﻿version: '3.8'
+
+services:
+  RedisLocal:
+    image: redis:7-alpine
+    container_name: RedisLocal
+    restart: unless-stopped
+    
+    # Port mapping
+    ports:
+      - "6379:6379"
+    
+    # Environment variables for Redis configuration
+    environment:
+      - REDIS_PASSWORD=mySecurePassword123
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 512M
+    
+    # Redis configuration
+    command: >
+      redis-server 
+      --requirepass mySecurePassword123
+      --maxmemory 4gb
+      --maxmemory-policy allkeys-lru
+      --appendonly yes
+      --appendfsync everysec
+    
+    # Volume for data persistence
+    volumes:
+      - redis_data:/data
+      - ./redis-init.sh:/docker-entrypoint-initdb.d/redis-init.sh:ro
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "mySecurePassword123", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Network
+    networks:
+      - redis_network
+
+# Named volumes for data persistence
+volumes:
+  redis_data:
+    driver: local
+
+# Custom network
+networks:
+  redis_network:
+    driver: bridge
