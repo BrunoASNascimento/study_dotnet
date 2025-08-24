@@ -1,5 +1,4 @@
-﻿using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Running;
+﻿using BenchmarkDotNet.Running;
 using BenchmarkStudy.Services;
 
 
@@ -10,6 +9,6 @@ public class Program
     public static void Main(string[] args)
     {
         BenchmarkRunner.Run<BenchmarkSum>();
-        BenchmarkRunner.Run<BenchmarkListAndHashSet>();  
+        //BenchmarkRunner.Run<BenchmarkListAndHashSet>();  
     }
 }

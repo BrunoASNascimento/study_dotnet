@@ -1,5 +1,4 @@
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Running;
 
 namespace BenchmarkStudy.Services;
 
@@ -10,31 +9,99 @@ public class BenchmarkSum
     [GlobalSetup]
     public void Setup()
     {
-        numbers = Enumerable.Range(1, 1000).ToArray();
+        numbers = Enumerable.Range(1, 10_000).ToArray();
     }
 
     [Benchmark]
-    public int SumWithForLoop()
+    public long SumWithLinq()
     {
-        int sum = 0;
-        for (int i = 0; i < numbers.Length; i++)
+        return numbers.Sum();
+    }
+
+    [Benchmark]
+    public long SumWithLinqLong()
+    {
+        return numbers.Sum(x => (long)x);
+    }
+
+
+    [Benchmark]
+    public long SumParallel()
+    {
+        return numbers.AsParallel().Sum(x => (long)x);
+    }
+
+    [Benchmark]
+    public long SumWithForLoop()
+    {
+        long sum = 0;
+        for (long i = 0; i < numbers.Length; i++)
             sum += numbers[i];
         return sum;
     }
 
     [Benchmark]
-    public int SumWithForEach()
+    public long SumWithForEach()
     {
-        int sum = 0;
-        foreach (int i in numbers)
+        long sum = 0;
+        foreach (long i in numbers)
             sum += i;
 
         return sum;
     }
 
     [Benchmark]
-    public int SumWithLinq()
+    public long SumParallelFor()
     {
-        return numbers.Sum();
+        long sum = 0;
+        Parallel.For(0, numbers.Length, i =>
+        {
+            Interlocked.Add(ref sum, numbers[i]);
+        });
+        return sum;
     }
+
+    [Benchmark]
+    public long SumParallelForWithLimit()
+    {
+        long sum = 0;
+        ParallelOptions options = new ParallelOptions { MaxDegreeOfParallelism = 4 };
+        Parallel.For(0, numbers.Length, i =>
+        {
+            Interlocked.Add(ref sum, numbers[i]);
+        });
+        return sum;
+    }
+
+    [Benchmark]
+    public long SumParallelForOptimized()
+    {
+        object lockObj = new object();
+        long sum = 0;
+
+        Parallel.For(0, numbers.Length, () => 0, // Thread-local initializer
+            (i, loop, localSum) =>
+            {
+                return localSum + numbers[i]; // Accumulate locally
+            },
+            localSum =>
+            {
+                lock (lockObj)
+                {
+                    sum += localSum; // Combine results once per thread
+                }
+            });
+
+        return sum;
+    }
+
+    [Benchmark]
+    public long SumParallelForPartitioner()
+    {
+        return numbers.AsParallel()
+                      .WithDegreeOfParallelism(Environment.ProcessorCount)
+                      .Sum(x => (long)x);
+    }
+
+
 }
