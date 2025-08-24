@@ -12,4 +12,8 @@
       <PackageReference Include="Microsoft.VisualStudio.DiagnosticsHub.BenchmarkDotNetDiagnosers" Version="18.0.36328.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="BenchmarkDotNet.Artifacts\" />
+    </ItemGroup>
+
 </Project>
