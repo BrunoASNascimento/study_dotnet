@@ -21,8 +21,7 @@ class Program
         Console.WriteLine($"Connected to Redis with connection string: {settings.RedisConnectionString}");
         Console.WriteLine();
 
-        // Test default Redis configuration
-        Console.WriteLine("Testing Redis connection with configuration from appsettings.json...");
+
 
         // Upload a string to Redis
         var uploadString = new AddString("test", program._connectionRedis);
@@ -31,5 +30,9 @@ class Program
         // Upload a hash to Redis
         var uploadHash = new AddHash("test2", program._connectionRedis);
         uploadHash.Execute();
+
+        // Upload multiple lines to a hash in Redis
+        var uploadHashMultiLines = new AddHashMultiLines("test3", program._connectionRedis);
+        uploadHashMultiLines.Execute();
     }
 }

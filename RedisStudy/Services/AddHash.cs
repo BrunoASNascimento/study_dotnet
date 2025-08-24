@@ -21,7 +21,7 @@ namespace RedisStudy.Services
             var db = _connectionRedis.GetDatabase();
 
             // Generate a unique field name
-            string fieldName = GenerateFieldName();
+            string fieldName = "field_" + Guid.NewGuid().ToString("N")[..6];
 
             // Create the data to store
             var fieldValues = new Dictionary<string, string>
@@ -29,8 +29,14 @@ namespace RedisStudy.Services
                 { fieldName, Guid.NewGuid().ToString() }
             };
 
+            var options = new JsonSerializerOptions
+            {
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = false
+            };
+
             // Serialize the data
-            string serializedData = SerializeFieldValues(fieldValues);
+            string serializedData = JsonSerializer.Serialize(fieldValues, options);
 
             // Store in Redis hash
             db.HashSet(_key, fieldName, serializedData);
@@ -39,20 +45,7 @@ namespace RedisStudy.Services
             Console.WriteLine($"Stored in hash '{_key}' field '{fieldName}' = {serializedData}");
         }
 
-        private static string GenerateFieldName()
-        {
-            return "field_" + Guid.NewGuid().ToString("N")[..6];
-        }
 
-        private static string SerializeFieldValues(Dictionary<string, string> fieldValues)
-        {
-            var options = new JsonSerializerOptions
-            {
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                WriteIndented = false
-            };
 
-            return JsonSerializer.Serialize(fieldValues, options);
-        }
     }
 }
