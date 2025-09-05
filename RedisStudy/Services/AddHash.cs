@@ -1,5 +1,4 @@
-﻿using System.Text.Encodings.Web;
-using System.Text.Json;
+﻿using MessagePack;
 using RedisStudy.InfrastructureRedis;
 
 namespace RedisStudy.Services
@@ -17,35 +16,52 @@ namespace RedisStudy.Services
 
         public void Execute()
         {
+            TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo");
             // Get database connection
             var db = _connectionRedis.GetDatabase();
 
             // Generate a unique field name
             string fieldName = "field_" + Guid.NewGuid().ToString("N")[..6];
+            DateTime saoPauloNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo"));
+            DateTime utcSpecified = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified);
 
             // Create the data to store
-            var fieldValues = new Dictionary<string, string>
+            var fieldValues = new Dictionary<string, object>
             {
-                { fieldName, Guid.NewGuid().ToString() }
+                { fieldName, Guid.NewGuid().ToString() },
+                { "datetimeutc", DateTime.UtcNow },
+                { "datetimelocal", DateTime.Now },
+                { "datetimeutcSpecified",utcSpecified },
+                { "datetimeutcconvertedlocal", saoPauloNow }
             };
 
-            var options = new JsonSerializerOptions
+            // Serialize the data using MessagePack
+            byte[]? serializedData = Serialize(fieldValues);
+
+            if (serializedData == null && fieldValues == null)
             {
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                WriteIndented = false
-            };
+                Console.WriteLine("Failed to serialize data");
+                return;
+            }
+            else
+            {
+                // Store in Redis hash
+                db.HashSet(_key, fieldName, serializedData);
 
-            // Serialize the data
-            string serializedData = JsonSerializer.Serialize(fieldValues, options);
-
-            // Store in Redis hash
-            db.HashSet(_key, fieldName, serializedData);
-
-            // Log the operation
-            Console.WriteLine($"Stored in hash '{_key}' field '{fieldName}' = {serializedData}");
+                // Log the operation
+                Console.WriteLine($"Stored in hash '{_key}' field '{fieldName}' = MessagePack serialized data ({serializedData.Length} bytes)");
+                Console.WriteLine($"Original data: {string.Join(", ", fieldValues.Select(kv => $"{kv.Key}={kv.Value}"))}");
+            }
         }
 
-
-
+        private static byte[]? Serialize(object? obj)
+        {
+            //var options = MessagePackSerializerOptions.Standard.WithResolver(
+            //CompositeResolver.Create(
+            //    NativeDateTimeResolver.Instance,
+            //    ContractlessStandardResolver.Instance));
+            return obj == null ? null : MessagePackSerializer.Serialize(obj, MessagePack.Resolvers.ContractlessStandardResolver.Options);
+            //return obj == null ? null : MessagePackSerializer.Serialize(obj, options);
+        }
     }
 }

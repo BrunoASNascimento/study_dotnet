@@ -10,7 +10,7 @@ class Program
         _connectionRedis = new ConnectionRedis();
     }
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         var program = new Program();
 
@@ -31,8 +31,10 @@ class Program
         var uploadHash = new AddHash("test2", program._connectionRedis);
         uploadHash.Execute();
 
-        // Upload multiple lines to a hash in Redis
+        // Upload multiple lines to a hash in Redis       
         var uploadHashMultiLines = new AddHashMultiLines("test3", program._connectionRedis);
-        uploadHashMultiLines.Execute();
+        await uploadHashMultiLines.ExecuteAsync();
+
+
     }
 }
